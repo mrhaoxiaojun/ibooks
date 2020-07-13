@@ -9,8 +9,7 @@ module.exports = Object.assign({}, themeReco, {
   // 搜索设置
   search: true,
   searchMaxSuggestions: 10,
-  // 自动形成侧边导航
-  // sidebar: 'auto',
+  codeTheme: 'solarizedlight',
   // 选项来启用页面滚动效果
   smoothScroll: true
 })

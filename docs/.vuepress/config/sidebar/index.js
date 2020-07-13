@@ -108,7 +108,7 @@ module.exports = Object.assign(
          {
           title: '基础篇', 
           collapsable: false, 
-          path: 'base'
+          path: 'linuxBase'
          },
          {
           title: '系统操作篇', 
