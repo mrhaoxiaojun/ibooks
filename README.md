@@ -3,7 +3,7 @@
 #### 介绍
 个人博客（含技术、理财、影视、书籍、随笔等心得或教程）基于vuepress搭建，一套代码发布两个站点（GitHub&Gitee）分别部署到了 Github Pages和Gitee Pages服务下
 
-GitHub亮点：使用GitHub Actions 功能 代码push 自动化跑workflows部署博客，so easy；实实在在体验了一把CICD【全称：持续集成 (Continuous Integration) ，持续部署 (Continuous Deployment) 】
+GitHub亮点：使用GitHub Actions 功能 代码push 自动化跑workflows部署博客，so easy；实实在在体验了一把CI/CD【全称：持续集成 (Continuous Integration) ，持续部署 (Continuous Deployment) 】
 
 Gitee亮点：做为国内开源平台，访问速度那是没得说，GitHub太慢，作为博客来讲Gitee还是很不错的选择，但是不支持自动化部署，还是需要手动去点一下更新
 
