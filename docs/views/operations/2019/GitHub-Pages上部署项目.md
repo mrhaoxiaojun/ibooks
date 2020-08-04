@@ -16,6 +16,7 @@ categories:
 
 现在都是需要自己搞两个分支，然后手动发布，那么我们想直接push代码的时候就自动 持续集成/持续部署(CI/CD) 后面我们会继续分析
 :::
+<!-- more -->
 
 :::tip
 **需要注意的坑（改成相对路径才可以直接访问生成的静态文件）**
@@ -24,7 +25,7 @@ categories:
 
  2、在build => util.js 里找到ExtractTextPlugin.extract增加一行：publicPath: '../../'
 :::
-<!-- more -->
+
 
 **所有部署方法的第一步：**
 
