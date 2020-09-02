@@ -1,13 +1,13 @@
 
 FE 由浅入深
 
-[白丁 - Javascript基础知识](/course/base/base)
+[白丁 - Javascript基础知识](/views/frontEnd/2020/jsBase)
 
 [白丁 - ECMAScript 6 收录笔记](/course/es6/read)
 
 [白丁 - 正则-教程篇](/course/regExp/regExp)
 
-[白丁 - 编程技巧](/course/skills/skills)
+[白丁 - 编程技巧](/views/frontEnd/2020/skills)
 
 [白丁 - Javascript设计模式-教程篇](/course/designMode/intro)
 
@@ -28,5 +28,5 @@ FE 由浅入深
 
 运维相关（linux、shell、DNS、iptables、Lamp）
 
-[白丁 - linux实战-笔记篇](/course/linux/base)
+[白丁 - linux实战-笔记篇](/course/linux/linuxBase)
 

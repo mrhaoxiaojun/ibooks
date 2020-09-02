@@ -77,30 +77,30 @@ box-sizing: content-box|border-box|inherit;
 
 在调用 `new` 的过程中会发生以上四件事情，我们也可以试着来自己实现一个 `new`
 
-```
+```js
 function create() {
-    // 创建一个空的对象
-    let obj = new Object()
-    // 获得构造函数
-    let Con = [].shift.call(arguments)
-    // 链接到原型
-    obj.__proto__ = Con.prototype
-    // 绑定 this，执行构造函数
-    let result = Con.apply(obj, arguments)
-    // 确保 new 出来的是个对象
-    return typeof result === 'object' ? result : obj
+  // 创建一个空的对象
+  let obj = new Object()
+  // 获得构造函数
+  let Con = [].shift.call(arguments)
+  // 链接到原型
+  obj.__proto__ = Con.prototype
+  // 绑定 this，执行构造函数
+  let result = Con.apply(obj, arguments)
+  // 确保 new 出来的是个对象
+  return typeof result === 'object' ? result : obj
 }
 ```
 
 **现在我们需要掌握函数内部的this几个特点**
 
-\1. 函数在定义的时候this是不确定的，只有在调用的时候才可以确定
+1. 函数在定义的时候this是不确定的，只有在调用的时候才可以确定
 
-\2. 一般函数直接执行，内部this指向全局window
+2. 一般函数直接执行，内部this指向全局window
 
-\3. 函数作为一个对象的方法，被该对象所调用，那么this指向的是该对象
+3. 函数作为一个对象的方法，被该对象所调用，那么this指向的是该对象
 
-\4. 构造函数中的this其实是一个隐式对象，类似一个初始化的模型，所有方法和属性都挂载到了这个隐式对象身上，后续通过new关键字来调用，从而实现实例化
+4. 构造函数中的this其实是一个隐式对象，类似一个初始化的模型，所有方法和属性都挂载到了这个隐式对象身上，后续通过new关键字来调用，从而实现实例化
 
 ### 介绍下原型链
 
@@ -120,7 +120,7 @@ function create() {
 
 　　就和css中的继承一样，如果自身没有定义就会继承父元素的样式。
 
-```
+```js
 function a(){};
 a.prototype.name = "追梦子";
 var b = new a();
@@ -141,7 +141,7 @@ console.log(b.name); //追梦子
 
 类数组可以转换为数组:
 
-```
+```js
 //第一种方法Array.prototype.slice.call(arrayLike, start);//第二种方法[...arrayLike];//第三种方法:Array.from(arrayLike);
 ```
 
@@ -158,7 +158,7 @@ true
 
 来看一个有趣的题
 
-```
+```js
 [] == false;
 ![] == false;
 ```
@@ -172,7 +172,7 @@ true
 
 ### 还有一些需要记住的，像：
 
-```
+```js
 undefined == null //true undefined和null 比较返回true，二者和其他值比较返回false
 Number(null) //0
 ```
@@ -181,7 +181,7 @@ Number(null) //0
 
 闭包的定义很简单：函数 A 返回了一个函数 B，并且函数 B 中使用了函数 A 的变量，函数 B 就被称为闭包。
 
-```
+```js
 function A() {
   let a = 1
   function B() {
@@ -196,7 +196,7 @@ function A() {
 
 经典面试题，循环中使用闭包解决 `var` 定义函数的问题
 
-```
+```js
 for ( var i=1; i<=5; i++) {
 	setTimeout( function timer() {
 		console.log( i );
@@ -209,7 +209,7 @@ for ( var i=1; i<=5; i++) {
 
 解决办法两种，第一种使用闭包
 
-```
+```js
 for (var i = 1; i <= 5; i++) {
   (function(j) {
     setTimeout(function timer() {
@@ -221,7 +221,7 @@ for (var i = 1; i <= 5; i++) {
 
 第二种就是使用 `setTimeout` 的第三个参数
 
-```
+```js
 for ( var i=1; i<=5; i++) {
 	setTimeout( function timer(j) {
 		console.log( j );
@@ -232,7 +232,7 @@ for ( var i=1; i<=5; i++) {
 
 第三种就是使用 `let` 定义 `i` 了
 
-```
+```js
 for ( let i=1; i<=5; i++) {
 	setTimeout( function timer() {
 		console.log( i );
@@ -243,7 +243,7 @@ for ( let i=1; i<=5; i++) {
 
 因为对于 `let` 来说，他会创建一个块级作用域，相当于
 
-```
+```js
 { // 形成块级作用域
   let i = 0
   {
@@ -276,7 +276,7 @@ forEach更多的用来遍历数组
 
 
 
-## call, apply, bind 区别
+### call, apply, bind 区别
 
 首先说下前两者的区别。
 
@@ -284,7 +284,7 @@ forEach更多的用来遍历数组
 
 除了第一个参数外，`call` 可以接收一个参数列表，`apply` 只接受一个参数数组。
 
-```
+```js
 let a = {
     value: 1
 }
@@ -305,7 +305,7 @@ getValue.apply(a, ['yck', '24'])
 - 不传入第一个参数，那么默认为 `window`
 - 改变了 this 指向，让新的对象可以执行该函数。那么思路是否可以变成给新的对象添加一个函数，然后在执行完以后删除？
 
-```
+```js
 Function.prototype.myCall = function (context) {
   var context = context || window
   // 给 context 添加一个属性
@@ -324,7 +324,7 @@ Function.prototype.myCall = function (context) {
 
 以上就是 `call` 的思路，`apply` 的实现也类似
 
-```
+```js
 Function.prototype.myApply = function (context) {
   var context = context || window
   context.fn = this
@@ -348,7 +348,7 @@ Function.prototype.myApply = function (context) {
 
 同样的，也来模拟实现下 `bind`
 
-```
+```js
 Function.prototype.myBind = function (context) {
   if (typeof this !== 'function') {
     throw new TypeError('Error')
@@ -366,13 +366,13 @@ Function.prototype.myBind = function (context) {
 }
 ```
 
-## 为什么 0.1 + 0.2 != 0.3
+### 为什么 0.1 + 0.2 != 0.3
 
 因为 JS 采用 IEEE 754 双精度版本（64位），并且只要采用 IEEE 754 的语言都有该问题。
 
 我们都知道计算机表示十进制是采用二进制表示的，所以 `0.1` 在二进制表示为
 
-```
+```js
 // (0011) 表示循环
 0.1 = 2^-4 * 1.10011(0011)
 
@@ -396,11 +396,11 @@ parseFloat((0.1 + 0.2).toFixed(10))
 
 ## es6-7
 
-## async 和 await
+### async 和 await
 
 一个函数如果加上 `async` ，那么该函数就会返回一个 `Promise`
 
-```
+```js
 async function test() {
   return "1";
 }
@@ -412,7 +412,7 @@ console.log(test()); // -> Promise {<resolved>: "1"}
 
 `await` 只能在 `async` 函数中使用
 
-```
+```js
 function sleep() {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -435,7 +435,7 @@ test()
 
 下面来看一个使用 `await` 的代码。
 
-```
+```js
 var a = 0
 var b = async () => {
   a = a + await 10
@@ -456,11 +456,11 @@ console.log('1', a) // -> '1' 1
 - 这时候同步代码执行完毕，开始执行异步代码，将保存下来的值拿出来使用，这时候 `a = 10`
 - 然后后面就是常规执行代码了
 
-## Proxy
+### Proxy
 
 Proxy 是 ES6 中新增的功能，可以用来自定义对象中的操作
 
-```
+```js
 let p = new Proxy(target, handler);
 // `target` 代表需要添加代理的对象
 // `handler` 用来自定义对象中的操作
@@ -468,7 +468,7 @@ let p = new Proxy(target, handler);
 
 可以很方便的使用 Proxy 来实现一个数据绑定和监听
 
-```
+```js
 let onWatch = (obj, setBind, getLogger) => {
   let handler = {
     get(target, property, receiver) {
@@ -496,7 +496,7 @@ p.a // -> Get 'a' = 2
 
 ### 如何使用Set去重
 
-```
+```js
 let arr = [12,43,23,43,68,12];
 let item = [...new Set(arr)];
 console.log(item);//[12, 43, 23, 68]
@@ -522,7 +522,7 @@ console.log(item);//[12, 43, 23, 68]
 
 [![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
 
-```
+```js
 //定义类
 class Point { 
   constructor(x,y) { 
@@ -577,7 +577,7 @@ class Point {
 
 JS 在执行的过程中会产生执行环境，这些执行环境会被顺序的加入到执行栈中。如果遇到异步的代码，会被挂起并加入到 Task（有多种 task） 队列中。一旦执行栈为空，Event Loop 就会从 Task 队列中拿出需要执行的代码并放入执行栈中执行，所以本质上来说 JS 中的异步还是同步行为。
 
-```
+```js
 console.log('script start')
 
 setTimeout(function() {
@@ -592,7 +592,7 @@ console.log('script end')
 
 不同的任务源会被分配到不同的 Task 队列中，任务源可以分为 微任务（microtask） 和 宏任务（macrotask）。在 ES6 规范中，microtask 称为 `jobs`，macrotask 称为 `task`。
 
-```
+```js
 console.log('script start')
 
 setTimeout(function() {
@@ -662,7 +662,7 @@ console.log('script end')
 
 举个例子
 
-```
+```js
 // 假设这里模拟一个 ul，其中包含了 5 个 li
 ;[1, 2, 3, 4, 5][
   // 这里替换上面的 li
@@ -675,7 +675,7 @@ console.log('script end')
 
 如果以上操作对应到 DOM 中，那么就是以下代码
 
-```
+```js
 // 删除第三个 li
 ul.childNodes[2].remove()
 // 将第四个 li 和第五个交换位置
@@ -694,7 +694,7 @@ ul.replaceChild(cloenToNode, fromNode)
 
 以下是一个 JS 对象模拟 DOM 对象的简单实现
 
-```
+```js
 export default class Element {
   /**
    * @param {String} tag 'div'
@@ -764,7 +764,7 @@ export default class Element {
 
 ```
 
-####Virtual Dom 算法简述
+#### Virtual Dom 算法简述
 
 既然我们已经通过 JS 来模拟实现了 DOM，那么接下来的难点就在于如何判断旧的对象和新的对象之间的差异。
 
@@ -777,7 +777,7 @@ DOM 是多叉树的结构，如果需要完整的对比两颗树的差异，那�
 - 首先从上至下，从左往右遍历对象，也就是树的深度遍历，这一步中会给每个节点添加索引，便于最后渲染差异
 - 一旦节点有子元素，就去判断子元素是否有不同
 
-####Virtual Dom 算法实现
+#### Virtual Dom 算法实现
 
 首先我们来实现树的递归算法，在实现该算法前，先来考虑下两个节点对比会有几种情况
 
@@ -785,7 +785,7 @@ DOM 是多叉树的结构，如果需要完整的对比两颗树的差异，那�
 2. 新的节点的 `tagName` 和 `key`（可能都没有）和旧的相同，开始遍历子树
 3. 没有新的节点，那么什么都不用做
 
-```
+```js
 import { StateEnums, isString, move } from './util'
 import Element from './element'
 
@@ -835,7 +835,7 @@ function dfs(oldNode, newNode, index, patches) {
 2. 遍历新的属性列表，判断两个列表中都存在的属性的值是否有变化
 3. 在第二步中同时查看是否有属性不存在与旧的属性列列表中
 
-```
+```js
 function diffProps(oldProps, newProps) {
   // 判断 Props 分以下三步骤
   // 先遍历 oldProps 查看是否存在删除的属性
@@ -965,7 +965,7 @@ Bus；Vuex；provide / inject API、`$attrs/$listeners`
 
 [![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
 
-```
+```js
 import Vue from 'vue'
 import Router from 'vue-router'
 import Main from '@/components/Main'
@@ -1098,25 +1098,25 @@ webpack功能强大，难点在于它的配置文件，webpack4默认不需要�
 
 简单点说，CSRF 就是利用用户的登录态发起恶意请求。
 
-####如何攻击
+#### 如何攻击
 
 假设网站中有一个通过 Get 请求提交用户评论的接口，那么攻击者就可以在钓鱼网站中加入一个图片，图片的地址就是评论接口
 
-```
+```html
 <img src="http://www.domain.com/xxx?comment='attack'" />
 
 ```
 
 如果接口是 Post 提交的，就相对麻烦点，需要用表单来提交接口
 
-```
+```html
 <form action="http://www.domain.com/xxx" id="CSRF" method="post">
   <input name="comment" value="attack" type="hidden" />
 </form>
 
 ```
 
-####如何防御
+#### 如何防御
 
 防范 CSRF 可以遵循以下几种规则：
 
@@ -1125,15 +1125,15 @@ webpack功能强大，难点在于它的配置文件，webpack4默认不需要�
 3. 阻止第三方网站请求接口
 4. 请求时附带验证信息，比如验证码或者 token
 
-####SameSite
+#### SameSite
 
 可以对 Cookie 设置 `SameSite` 属性。该属性设置 Cookie 不随着跨域请求发送，该属性可以很大程度减少 CSRF 的攻击，但是该属性目前并不是所有浏览器都兼容。
 
-####验证 Referer
+#### 验证 Referer
 
 对于需要防范 CSRF 的请求，我们可以通过验证 Referer 来判断该请求是否为第三方网站发起的。
 
-####Token
+#### Token
 
 服务器下发一个随机 Token（算法不能复杂），每次发起请求时将 Token 携带上，服务器验证 Token 是否有效。
 
@@ -1144,13 +1144,13 @@ webpack功能强大，难点在于它的配置文件，webpack4默认不需要�
 
 XSS 分为三种：反射型，存储型和 DOM-based
 
-####如何攻击
+#### 如何攻击
 
 XSS 通过修改 HTML 节点或者执行 JS 代码来攻击网站。
 
 例如通过 URL 获取某些参数
 
-```
+``` html
 <!-- http://www.domain.com?name=<script>alert(1)</script> -->
 <div>{{name}}</div>
 
@@ -1160,11 +1160,11 @@ XSS 通过修改 HTML 节点或者执行 JS 代码来攻击网站。
 
 也有另一种场景，比如写了一篇包含攻击代码 `alert(1)` 的文章，那么可能浏览文章的用户都会被攻击到。这种攻击类型是存储型攻击，也可以说是 DOM-based 攻击，并且这种攻击打击面更广。
 
-####如何防御
+#### 如何防御
 
 最普遍的做法是转义输入输出的内容，对于引号，尖括号，斜杠进行转义
 
-```
+```js
 function escape(str) {
   str = str.replace(/&/g, '&amp;')
   str = str.replace(/</g, '&lt;')
@@ -1180,7 +1180,7 @@ function escape(str) {
 
 通过转义可以将攻击代码 `alert(1)` 变成
 
-```
+```js
 // -> &lt;script&gt;alert(1)&lt;&#x2F;script&gt;
 escape('<script>alert(1)</script>')
 
@@ -1188,7 +1188,7 @@ escape('<script>alert(1)</script>')
 
 对于显示富文本来说，不能通过上面的办法来转义所有字符，因为这样会把需要的格式也过滤掉。这种情况通常采用白名单过滤的办法，当然也可以通过黑名单过滤，但是考虑到需要过滤的标签和标签属性实在太多，更加推荐使用白名单的方式。
 
-```
+```js
 var xss = require('xss')
 var html = xss('<h1 id="title">XSS Demo</h1><script>alert("xss");</script>')
 // -> <h1>XSS Demo</h1>&lt;script&gt;alert("xss");&lt;/script&gt;
@@ -1208,7 +1208,7 @@ console.log(html)
 
 JSONP 的原理很简单，就是利用 `` 标签没有跨域限制的漏洞。通过 `` 标签指向一个需要访问的地址并提供一个回调函数来接收数据当需要通讯时。
 
-```
+```js
 <script src="http://domain/api?param1=a&param2=b&callback=jsonp"></script>
 <script>
     function jsonp(data) {
@@ -1222,7 +1222,7 @@ JSONP 使用简单且兼容性不错，但是只限于 `get` 请求。
 
 在开发中可能会遇到多个 JSONP 请求的回调函数名是相同的，这时候就需要自己封装一个 JSONP，以下是简单实现
 
-```
+```js
 function jsonp(url, jsonpCallback, success) {
   let script = document.createElement('script')
   script.src = url
@@ -1238,7 +1238,7 @@ jsonp('http://xxx', 'callback', function(value) {
 })
 ```
 
-####CORS
+#### CORS
 
 CORS 需要浏览器和后端同时支持。IE 8 和 9 需要通过 `XDomainRequest` 来实现。
 
@@ -1246,17 +1246,17 @@ CORS 需要浏览器和后端同时支持。IE 8 和 9 需要通过 `XDomainReq
 
 服务端设置 `Access-Control-Allow-Origin` 就可以开启 CORS。 该属性表示哪些域名可以访问资源，如果设置通配符则表示所有网站都可以访问资源。
 
-####document.domain
+#### document.domain
 
 该方式只能用于二级域名相同的情况下，比如 `a.test.com` 和 `b.test.com` 适用于该方式。
 
 只需要给页面添加 `document.domain = 'test.com'` 表示二级域名都相同就可以实现跨域
 
-####postMessage
+#### postMessage
 
 这种方式通常用于获取嵌入页面中的第三方页面数据。一个页面发送消息，另一个页面判断来源并接收消息
 
-```
+```js
 // 发送消息端
 window.parent.postMessage('message', 'http://test.com')
 // 接收消息端

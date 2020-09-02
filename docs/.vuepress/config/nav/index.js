@@ -9,7 +9,8 @@ module.exports = [
       { text: '正则-简版教程篇', link: '/course/regExp/regExp' },
       { text: 'Git 简版教程篇', link: '/course/git/intro' },
       { text: 'ECMAScript 6 收录笔记', link: '/course/es6/read' },
-      { text: 'Linux实战-笔记篇', link: '/course/linux/linuxBase' }
+      { text: 'Linux实战-笔记篇', link: '/course/linux/linuxBase' },
+      { text: '面试知识库', link: '/course/interview/js' }
     ]
   },
   { text: '联系', 
