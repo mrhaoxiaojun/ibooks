@@ -57,45 +57,6 @@ module.exports = Object.assign(
         ]
       }
     ],
-    '/course/es6/': [
-      {
-        title: 'ECMAScript 6',
-        collapsable: false,
-        children: [
-          {
-            title: '前言',
-            collapsable: false,
-            path: 'read'
-          },
-          {
-            title: 'ECMAScript 6 简介',
-            collapsable: false,
-            path: 'intro'
-          },
-          {
-            title: 'Set数据结构',
-            collapsable: false,
-            path: 'Set'
-          },
-          {
-            title: 'Map数据结构',
-            collapsable: false,
-            path: 'Map'
-          },
-          {
-            title: 'Proxy对象',
-            collapsable: false,
-            path: 'Proxy'
-          },
-          {
-            title: 'Reflect对象',
-            collapsable: false,
-            path: 'Reflect'
-          },
-
-        ]
-      }
-    ],
     '/course/designMode/': [
       {
         title: 'Javascript设计模式',
@@ -154,6 +115,45 @@ module.exports = Object.assign(
             collapsable: false,
             path: 'queston'
           }
+        ]
+      }
+    ],
+    '/course/es6/': [
+      {
+        title: 'ECMAScript 6',
+        collapsable: false,
+        children: [
+          {
+            title: '前言',
+            collapsable: false,
+            path: 'read'
+          },
+          {
+            title: 'ECMAScript 6 简介',
+            collapsable: false,
+            path: 'intro'
+          },
+          {
+            title: 'Set数据结构',
+            collapsable: false,
+            path: 'Set'
+          },
+          {
+            title: 'Map数据结构',
+            collapsable: false,
+            path: 'Map'
+          },
+          {
+            title: 'Proxy对象',
+            collapsable: false,
+            path: 'Proxy'
+          },
+          {
+            title: 'Reflect对象',
+            collapsable: false,
+            path: 'Reflect'
+          },
+
         ]
       }
     ],

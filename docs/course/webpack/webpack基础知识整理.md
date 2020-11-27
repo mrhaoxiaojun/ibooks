@@ -14,6 +14,56 @@ webpack是一个 **模块打包工具**，支持所有的打包语法，比如 `
 
 优化打包速度最有效的方法就是保持 `nodejs` 和 `webpack` 为最新版本。
 
+### 为什么需要构建工具？
+
+- 转换 ES6 语法
+- 转换 JSX
+- 压缩混淆
+- CSS 前缀补全/预处理理器器
+- 图⽚片压缩
+
+### 前端构建演变之路
+
+- ant + YUI Tool
+- grunt
+- gulp fis3 
+- webpack parcel rollup 
+
+### 为什么选择 webpack?
+
+- 社区⽣生态丰富
+- 配置灵活和插件化扩展
+- 官⽅方更更新迭代速度快
+
+### 初识webpack：配置⽂文件名称
+
+可以通过webpack --config 指定配置⽂文件
+webpack 默认配置⽂文件：webpack.config.js
+
+### 初识 webpack：webpack 配置组成
+
+
+```js
+module.exports = {
+  entry: './src/index.js',  // 打包的⼊口⽂文件 
+  output: './dist/main.js', // 打包的输出 
+  mode: 'production', // 环境
+
+  module: {
+      rules: [{ // Loader 配置
+
+          test: /\.txt$/,
+          use: 'raw-loader'
+      }]
+  },
+  plugins: [
+    new HtmlwebpackPlugin({ // 插件配置
+      template: './src/index.html’ 
+    }) 
+  ]
+}
+```
+
 <!-- more -->
 
 ## 安装
@@ -70,6 +120,19 @@ entry: {
 
 ## loader
 
+常⻅见的 Loaders 
+
+名称|描述
+--|--
+babel-loader | 转换es6、7等js新特性语法
+css-loader | 将.css文件加载和解析
+less-loader | 将less转换为css
+ts-loader | 将ts转换为js
+file-loader | 图片、字体等打包
+rwa-loader | 将文件以字符串的形式导入
+thread-loader | 多线程打包js和css
+... | ...
+
 `webpack` 可以使用 `loader` 来预处理文件。这允许你打包除 `JavaScript` 之外的任何静态资源，js的打包是webpack内置的。你可以使用 `Node.js` 来很简单地编写自己的 `loader`。
 
 ```js
@@ -83,10 +146,10 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   module: {
-    rules: [
+    rules: [ // test 指定匹配规则 
       {
         test: /\.jpg$/,
-        use: {
+        use: { // use 指定使⽤用的 loader 名称
           loader: 'file-loader'
         }
       }
@@ -378,6 +441,21 @@ module.exports = {
 
 可以在webpack运行到某个时刻的时候，做一些事情。
 
+插件用于 bundle ⽂件的优化，资源管理和环境变量注⼊，作用于整个构建过程
+
+**常⻅见的 Plugins**
+
+名称|描述
+--|--
+CommonsChunkPlugin | 将chunks相同的模块嗲吗提取成公共的js
+CleanWebpackPlugin | 清理构建目录
+ExtractTextWebpackPlugin | 将css充bunlde文件里提取成一个独立的css文件
+CopyWebpackPlugin | 将文件或文件夹拷贝到构建的输出目录
+HtmlWebpackPlugin | 创建html文件承载输出的bundle
+UglifyjsWebapckPlugin | 压缩Js
+ZipWebpackPlugin | 将打包出的资源生成一个zip包
+... | ... 
+
 ### html-webpack-plugin
 
 会在打包之后，自动生成一个 html 文件，并把打包生成的 js 自动引入到这个 html 文件中。
@@ -393,7 +471,7 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist')
   },
-  plugins: [new HtmlWebpackPlugin()]
+  plugins: [new HtmlWebpackPlugin()] // 放到 plugins 数组⾥里里
 }
 ```
 
@@ -440,6 +518,13 @@ module.exports = {
   ]
 }
 ```
+## Mode 的内置函数功能
+
+选项 | 描述
+--|--
+development | 设置process.env.NODE_ENV的值为development。开启NameChunksPlugin和NameModulesPlugin
+production | 设置process.env.NODE_ENV的值为production。开启，FlagDependencyUsagePlugin，FlagIncludedChunksPlugin，ModuleConcatenationPlugin，NoEmitOnErrorsPlugin和TerserPlugin。
+none | 选择退出任何默认优化选项
 
 ## 多个输出文件
 
@@ -513,8 +598,37 @@ sourceMap 通过配置中的 devtool 去配置，参数的含义大概有以下�
   }
 }
 ```
+webpack 开启监听模式，有两种⽅方式：
+
+- 启动 webpack 命令时，带上 --watch 参数
+- 在配置 webpack.config.js 中设置 watch: true
+
+**唯⼀一缺陷：每次需要⼿手动刷新浏览器器**
+
+### 文件监听的原理理分析
+
+轮询判断⽂件的最后编辑时间是否变化
+某个⽂文件发⽣了了变化，并不不会立刻告诉监听者，⽽是先缓存起来，等 aggregateTimeout
+
+```js
+module.export = { 
+  //默认 false，也就是不不开启 watch: true, //只有开启监听模式时，watchOptions才有意义 
+  wathcOptions: { 
+  //默认为空，不监听的文件或者文件夹，支持正则匹配 
+  ignored: /node_modules/, 
+  //监听到变化发生后会等300ms再去执行，默认300ms 
+  aggregateTimeout: 300, 
+  //判断文件是否发生变化是通过不停询问系统指定文件有没有变化实现的，默认每秒问1000次 
+  poll: 1000 } 
+}
+```
 
 ### webpack-dev-server 
+
+- WDS 不刷新浏览器器
+- WDS 不输出⽂文件，而是放在内存中
+- 使⽤用 HotModuleReplacementPlugin插件
+
 
 上面的html的打开的方式还是需要通过 `file` 协议打开一个本地文件，在浏览器地址是这样的：`file:///Users/reco/workSpace/git/personal/work/test.html`。这样的话发送 `AJAX` 请求就有问题了，因为发送请求需要 `http` 或者 `https` 协议，这时需要的是在本地启动一个服务，我们可以借助 `webpack-dev-server` （打包时将打包的文件放在内存中，提高打包速度）。
 
@@ -578,7 +692,7 @@ module.exports = {
 
 const espress = require('express')
 const webapck = require('webpack')
-const webpackDevMiddleware = require('webpack-dev-middleware')
+const webpackDevMiddleware = require('webpack-dev-middleware') // WDM 将 webpack 输出的⽂文件传输给服务器器
 const config = require('./webpack.config.js')
 const complier = webpack(config)
 
@@ -649,6 +763,14 @@ if (module.hot) {
 当引用 css 的时候只需要引用，并不需要上面这一坨代码，就是因为 `css-loader` 已经内置了上面的方法，就像在写 vue、react 代码不需要写上面这坨代码一样，他们的 loader 中也内置了这些方法。只有在使用一些特殊的文件类型才需要。（react 是借助 babel-preset 实现的）
 
 > 业务开发时，一般不是设置 hotOnly 这样才能试试显示最新代码和更改效果
+
+**热更更新的原理理分析**
+
+- Webpack Compile: 将 JS 编译成 Bundle
+- HMR Server: 将热更更新的⽂文件输出给 HMR Rumtime
+- Bundle server: 提供⽂文件在浏览器器的访问
+- HMR Rumtime: 会被注⼊入到浏览器器， 更新⽂文件的变化
+- bundle.js: 构建输出的⽂文件
 
 ## Babel
 
@@ -839,7 +961,28 @@ npm install --save-dev @babel/preset-react
 
 > 只支持 ES Module，因为 ES Module 是静态引入
 
-作用：模块按需引入，不会将全部代码引用过来
+- 作用：模块按需引入，不会将全部代码引用过来
+
+- 概念：1 个模块可能有多个⽅方法，只要其中的某个方法使⽤用到了了，则整个文件都会被打到 bundle 里⾯面去，tree shaking 就是只把用到的⽅方法打⼊入 bundle ，没用到的⽅法会在 uglify 阶段被擦除掉。
+
+- 使用：webpack 默认支持，在 .babelrc 里设置 modules: false 即可
+
+- 要求：必须是 ES6 的语法，CJS 的⽅方式不不⽀支持
+
+### DCE (Dead code elimination)
+- 代码不会被执行，不可到达
+- 代码执⾏的结果不会被用到
+- 代码只会影响死变量（只写不读）
+
+### Tree-shaking 原理
+
+利用 ES6 模块的特点: 
+
+- 只能作为模块顶层的语句出现 
+- import 的模块名只能是字符串常量 
+- import binding 是 immutable的
+
+代码擦除： uglify 阶段删除⽆用代码
 
 ### development
 
@@ -1568,6 +1711,29 @@ module.exports = {
 如果一个项目里在写单页面应用时，某个路由我们没有配置某个路由 A，访问时会显示 `can't get A`，这是我们可以配置 `historyApiFallback: true` 来将没有配置的页面直接转向 `index.html`，详细用法见 webpack官网。
 
 ## ESLint
+
+### eslint 的必要性
+
+2017年4月13日，腾讯⾼级工程师小明在做充值业务时，修改了苹果 iap ⽀付置，将 JSON 配置增加了重复的 key 。代码发布后，有小部分使用了vivo ⼿机的用户反馈充值⻚面白屏，无法在 Now app 内进行充值。后问题定位是： vivo 手机使用了系统自带的 webview 而没有使⽤ X5 内核，解析 JSON 时遇到 重复 key 报错，导致页面白屏。 
+
+### 行业里面优秀的 ESLint 规范实践
+
+腾讯：
+
+- Airbnb: eslint-config-airbnb、 eslint-config-airbnb-base
+- alloyteam团队 eslint-config-alloy(https://github.com/AlloyTeam/eslint-config-alloy) ·ivweb 团队：eslint-config-ivweb(https://github.com/feflow/eslint-config-ivweb)
+
+### 制定团队的 ESLint 规范
+
+- 不重复造轮子，基于 eslint:recommend 配置并改进
+- 能够帮助发现代码错误的规则，全部开启
+- 帮助保持团队的代码风格统一，而不是限制开发体验
+
+### ESLint 如何执行落地
+
+和 CI/CD 集成
+和 webpack 集成
+具体实现可看我的其他文章，利用git的钩子函数限制commit或push，构建时也可以增加lint pipline，强制eslint
 
 ```bash
 # 安装

@@ -1,5 +1,5 @@
 ---
-title: webpack 配置多页面应用的一次尝试
+title: webpack3.0配置多页面应用的一次尝试
 date: 2019-06-15
 sidebar: auto
 tags:
@@ -11,14 +11,14 @@ categories:
 ::: tip
 1. 最近有一个项目，考虑到要进行 SEO，所以要做成多页面应用。为了保证开发速度和开发效率，所以决定使用 webpack 做一套模块化配置方案。
 
-2. 下面主要针对一些重要的点提供思路，并不作详解。完整的代码，我会放在 github（[项目地址](https://github.com/recoluan/webpack-multipage-demo)）上供大家参考，如果有优化的地方，请在评论区指点出来。
+2. 下面主要针对一些重要的点提供思路，参考recoluan的项目（[项目地址](https://github.com/recoluan/webpack-multipage-demo)）
 :::
 
 <!-- more -->
 
 ## 目录
 
-```
+```bash
 |-- build                           webpack 配置
 |   |-- utils.js                    处理 webpack 配置的公共方法
 |   |-- webpack.base.conf.js        公共配置    
@@ -143,8 +143,10 @@ module.exports = {
   entry: getEntry(),
 }
 ```
+## 其他需求优化
 
-## JS
+
+### JS
 
 JS 方面，我们一般有以下需求：
 1. eslint 错误提醒；
@@ -236,7 +238,7 @@ const prodConfig = {
 module.exports = merge(baseConfig, prodConfig)
 ```
 
-## CSS
+### CSS
 
 CSS 方面，我们一般有以下需求：
 1. postcss-loader 安装 autoprefixer 插件，自动进行兼容性处理；
@@ -294,7 +296,7 @@ const prodConfig = {
 module.exports = merge(baseConfig, prodConfig)
 ```
 
-## images
+### images
 
 images 方面，我们一般有以下需求：
 1. css 和 js 中的图片可以被解析；
@@ -331,10 +333,6 @@ module.exports = [
   }
 ]
 ```
-
-
-
-## 其他
 
 ### devserver 和 热更新
 
