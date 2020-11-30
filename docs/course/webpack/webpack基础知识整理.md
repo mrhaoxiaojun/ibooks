@@ -605,7 +605,7 @@ webpack 开启监听模式，有两种⽅方式：
 
 **唯⼀一缺陷：每次需要⼿手动刷新浏览器器**
 
-### 文件监听的原理理分析
+### 文件监听的原理分析
 
 轮询判断⽂件的最后编辑时间是否变化
 某个⽂文件发⽣了了变化，并不不会立刻告诉监听者，⽽是先缓存起来，等 aggregateTimeout
@@ -623,7 +623,7 @@ module.export = {
 }
 ```
 
-### webpack-dev-server 
+## webpack-dev-server 
 
 - WDS 不刷新浏览器器
 - WDS 不输出⽂文件，而是放在内存中
@@ -719,7 +719,7 @@ app.listen(3000, () => {
    2. 一个页面同时引入两个模块的js，修改某个模块的js，页面会刷新，导致灵感一个模块的js也会初始化。
 
 存在的问题：
-   1. 在多页面应用里，html更改时并不会刷新，需手动，所以这种情况下，可以去掉更更新功能。
+   1. 在多页面应用里，html更改时并不会刷新，需手动，所以这种情况下，可以去掉更新功能。
 
 ```js
 const path = require('path')
@@ -764,13 +764,91 @@ if (module.hot) {
 
 > 业务开发时，一般不是设置 hotOnly 这样才能试试显示最新代码和更改效果
 
-**热更更新的原理理分析**
+### 热更更新的原理分析
 
 - Webpack Compile: 将 JS 编译成 Bundle
-- HMR Server: 将热更更新的⽂文件输出给 HMR Rumtime
-- Bundle server: 提供⽂文件在浏览器器的访问
-- HMR Rumtime: 会被注⼊入到浏览器器， 更新⽂文件的变化
-- bundle.js: 构建输出的⽂文件
+- HMR Server: 将热更新的文件输出给 HMR Rumtime
+- Bundle server: 提供文件在浏览器的访问
+- HMR Rumtime: 会被注入到浏览器， 更新文件的变化
+- bundle.js: 构建输出的文件
+
+## 文件指纹策略：chunkhash、contenthash和hash
+
+⽂件指纹如何⽣生成
+Hash：和整个项目的构建相关，只要项目⽂文件有修改，整个项目构建的 hash 值就会更改
+Chunkhash：和 webpack 打包的 chunk 有关，不同的 entry 会生成不同的 chunkhash 值
+Contenthash：根据文件内容来定义 hash ，文件内容不变，则 contenthash 不变
+
+### JS 的⽂文件指纹设置
+
+设置 output 的 filename，使用 [chunkhash]
+
+```js
+module.exports = { 
+  entry: { 
+    app: './src/app.js', 
+    search: './src/search.js' 
+  },
+  output: { 
+    +  filename: '[name][chunkhash:8].js', 
+    path: __dirname + '/dist' 
+  } 
+};
+
+```
+## CSS 的文件指纹设置
+
+设置 MiniCssExtractPlugin 的 filename， 使用 [contenthash]
+
+```js
+module.exports = { 
+  entry: { 
+    app: './src/app.js', 
+    search: './src/search.js' },
+    output: { filename: '[name][chunkhash:8].js',
+    path: __dirname + '/dist' },
+    plugins: [ 
+      new MiniCssExtractPlugin({filename: `[name][contenthash:8].css`});
+    ]
+  };
+}
+```
+## 图片的文件指纹设置
+
+设置 file-loader 的 name，使用 [hash]
+
+占位符名称 | 含义
+[ext] | 资源后缀名
+[name] | 文件名称
+[path] | 文件的相对路径
+[folder] | 文件的所在文件夹
+[contenthash] | 文件的内容hash，默认是md5生成
+[hash] | 文件的内容的hash，默认是md5生成
+[emoji] | 一个随机的指代文件内容emoji
+
+
+```js
+const path = require('path');
+module.exports = { 
+  entry: './src/index.js',
+  output: { filename: 'bundle.js',
+  path: path.resolve(__dirname,'dist') },
+  module: { 
+    rules: [ 
+      { 
+        test: /\.(png|svg|jpg|gif)$/, 
+        use: [{ 
+          loader: 'file-loader’, 
+          options: {
+            name: 'img/[name][hash:8].[ext] '
+          } 
+        }]
+      } 
+    ]
+  } 
+};
+```
+
 
 ## Babel
 
@@ -933,28 +1011,53 @@ npm install --save @babel/runtime-corejs2
 }
 ```
 
-## React打包
+##  Scope Hoisting
 
-```bash
-npm install --save-dev @babel/preset-react
-```
+### **没有开启Scope Hoisting之前**
 
-```json
-{
-  "presets": [
-    ["@babel/preset-env", {
-      useBuiltIns: 'usage'
-    }],
-    [
-      "@babel/preset-react",
-      {
-        "pragma": "dom", // default pragma is React.createElement
-        "pragmaFrag": "DomFrag", // default is React.Fragment
-        "throwIfNamespace": false // defaults to true
-      }
-    ]
-  ]
-}
+
+构建后的代码存在⼤量闭包代码
+
+![scopeHoisting-before](./imgs/scopeHoisting-before.jpg)
+
+结果
+
+- ⼤量作用域包裹代码，导致体积增大（模块越多越明显）
+- 运行代码时创建的函数作用域变多，内存开销变大
+
+### **模块转换分析**
+
+- 被 webpack 转换后的模块会带上⼀层包裹
+- import 会被转换成 __webpack_require
+
+### **进一步分析 webpack 的模块机制**
+
+- 打包出来的是一个 IIFE (匿匿名闭包)
+- modules 是一个数组，每一项是⼀个模块初始化函数
+- 通过 WEBPACK_REQUIRE_METHOD(0) 启动程序
+- __webpack_require ⽤用来加载模块，返回 module.exports
+
+### scope hoisting 原理
+
+原理：将所有模块的代码按照引用顺序放在⼀个函数作⽤用域里，然后适当的重命名一些变量以防止变量名冲突 
+对比: 通过 scope hoisting 可以减少函数声明代码和内存开销
+
+> 可以简单的把scope hoisting理解为是把每个模块被webpack处理成的模块初始化函数整理到一个统一的包裹函数里，也就是把多个作用域用一个作用域取代，以减少内存消耗并减少包裹块代码，从每个模块有一个包裹函数变成只有一个包裹函数包裹所有的模块，但是有一个前提就是，当模块的引用次数大于1时，比如被引用了两次或以上，那么这个效果会无效，也就是被引用多次的模块在被webpack处理后，会被独立的包裹函数所包裹
+
+### scope hoisting 使用
+
+webpack mode 为 production 默认开启
+
+必须是 ES6 语法，CJS 不支持
+
+```js
+module.exports = { 
+  entry: { app: './src/app.js', search: './src/search.js' }, 
+  output: { filename: '[name][chunkhash:8].js', path: __dirname + '/dist' }, 
+  plugins: [ 
+    // + new webpack.optimize.ModuleConcatenationPlugin() 
+    new webpack.optimize.ModuleConcatenationPlugin() 
+  };
 ```
 
 ## Tree Shaking
@@ -1059,7 +1162,7 @@ module.exports = {
 
     **更新**：上面 `CleanWebpackPlugin` 的语法是 `1.0` 版本的。`2.0` 它所清空的文件夹默认就是打包输出目录，无需再单独指定。
 
-## Code Splitting 
+## Code Splitting （代码分割）
 
 ### 原理
 
@@ -1153,6 +1256,21 @@ module.exports = {
   }
 }
 ```
+### 如何使用动态 import?
+
+安装 babel 插件
+
+ES6：动态 import（目前还没有原生⽀支持，需要 babel 转换）
+
+`npm install @babel/plugin-syntax-dynamic-import --save-dev`
+
+```js
+{
+"plugins": ["@babel/plugin-syntax-dynamic-import"],
+...
+}
+```
+
 
 ## Lazy Loading & Chunk
 
@@ -2375,14 +2493,6 @@ console.log(code)
 
 
 ```
-
-## 深入学习
-
-### CreateReactApp
-
-### vue-cli
-
-### Vue
 
 ## 其他
 
