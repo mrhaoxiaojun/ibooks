@@ -5,7 +5,7 @@ module.exports = [
   {
     text: '教程笔记',
     items: [
-      { text: '面试知识库-待整理学习', link: '/course/interview/js' },
+      // { text: '面试知识库-待整理学习', link: '/course/interview/js' },
       { text: 'Git 简版实战教程篇', link: '/course/git/intro' },
       { text: 'Webpack 实战浅聊', link: '/course/webpack/' },
       { text: '正则-简版实战教程篇-待完成', link: '/course/regExp/regExp' },

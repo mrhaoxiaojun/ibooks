@@ -1,62 +1,62 @@
 module.exports = Object.assign(
   {
-    '/course/interview/': [
-      {
-        title: '面经',
-        collapsable: false,
-        children: [
-          {
-            title: '基础样式',
-            collapsable: false,
-            path: 'css'
-          },
-          {
-            title: '核心语法',
-            collapsable: false,
-            path: 'js'
-          },
-          {
-            title: '浏览器',
-            collapsable: false,
-            path: 'browser'
-          },
-          {
-            title: '新能',
-            collapsable: false,
-            path: 'performance'
-          }, {
-            title: '安全',
-            collapsable: false,
-            path: 'safe'
-          },
-          {
-            title: '框架通识',
-            collapsable: false,
-            path: 'framework'
-          },
-          {
-            title: 'Vue',
-            collapsable: false,
-            path: 'vue'
-          },
-          {
-            title: 'React',
-            collapsable: false,
-            path: 'react'
-          },
-          {
-            title: '算法',
-            collapsable: false,
-            path: 'algorithm'
-          },
-          {
-            title: 'Webpack',
-            collapsable: false,
-            path: 'webpack'
-          },
-        ]
-      }
-    ],
+    // '/course/interview/': [
+    //   {
+    //     title: '面经',
+    //     collapsable: false,
+    //     children: [
+    //       {
+    //         title: '基础样式',
+    //         collapsable: false,
+    //         path: 'css'
+    //       },
+    //       {
+    //         title: '核心语法',
+    //         collapsable: false,
+    //         path: 'js'
+    //       },
+    //       {
+    //         title: '浏览器',
+    //         collapsable: false,
+    //         path: 'browser'
+    //       },
+    //       {
+    //         title: '新能',
+    //         collapsable: false,
+    //         path: 'performance'
+    //       }, {
+    //         title: '安全',
+    //         collapsable: false,
+    //         path: 'safe'
+    //       },
+    //       {
+    //         title: '框架通识',
+    //         collapsable: false,
+    //         path: 'framework'
+    //       },
+    //       {
+    //         title: 'Vue',
+    //         collapsable: false,
+    //         path: 'vue'
+    //       },
+    //       {
+    //         title: 'React',
+    //         collapsable: false,
+    //         path: 'react'
+    //       },
+    //       {
+    //         title: '算法',
+    //         collapsable: false,
+    //         path: 'algorithm'
+    //       },
+    //       {
+    //         title: 'Webpack',
+    //         collapsable: false,
+    //         path: 'webpack'
+    //       },
+    //     ]
+    //   }
+    // ],
     '/course/designMode/': [
       {
         title: 'Javascript设计模式',
