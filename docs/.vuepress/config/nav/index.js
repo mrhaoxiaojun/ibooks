@@ -13,6 +13,7 @@ module.exports = [
       { text: 'Linux实战-笔记篇', link: '/course/linux/linuxBase' },
       { text: 'ECMAScript 6 收录笔记-未完成', link: '/course/es6/read' },
       { text: 'Javascript设计模式-简版教程篇', link: '/course/designMode/intro' },
+      { text: 'Vue3.0 实战浅聊', link: '/course/vue/' },
     ]
   },
   { text: '联系', 
